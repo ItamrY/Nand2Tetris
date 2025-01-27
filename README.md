@@ -7,7 +7,7 @@ The course integrates theory with practical coding projects, offering a deep und
 
 Our final project is the "Saiyan Legends" Game we created from scratch (project 09)
 Game Tutorial
-https://github.com/user-attachments/assets/31ade45b-ce00-4618-ac6c-6025bcfcf143
+https://github.com/user-attachments/assets/a67a8e95-c4ff-4ac8-b3c9-67a7820673a7
 
 https://www.nand2tetris.org/
 
