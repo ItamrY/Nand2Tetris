@@ -1,0 +1,58 @@
+class Obstacle {
+    field int location, row, column;
+    field int start_location;
+
+    constructor Obstacle new() {
+        let row = (LCGRandom.randRange(32, 220));
+        let column = 512;
+        let location = (32 * row) + (column / 16);
+        return this;
+    }
+
+    method void draw() {
+        do Graphics.drawObstacle(location);
+        return;
+    }
+
+    //Clears the ball from the screen.
+    method void clear() {
+        do Graphics.clearObstacle(location);
+        return;
+    }
+
+    // Moves the square one step to the left.
+    method void moveLeft() {
+        // Clear the current position
+        do clear();
+
+        let column = column - 16;
+        // Move the ball one step left
+        let location = (32 * row) + (column/16);
+
+        do draw();
+        return;
+    }
+
+    method int getX() {
+        return column;
+    }
+
+    method int getY() {
+        return row;
+    }
+
+    method int getSize() {
+        return 16;
+    }
+
+    method boolean isAtEnd() {
+        return (column < 0); // True if the square is at the leftmost position of the same row
+    }
+
+    method void dispose() {
+        do clear();
+        do Memory.deAlloc(this);
+        return;
+    }
+    
+}

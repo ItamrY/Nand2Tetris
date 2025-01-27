@@ -1,0 +1,149 @@
+class Floor {
+	field int base_location;
+	
+    constructor Floor new(int pos) {
+		let base_location = pos;
+        return this;
+    }
+	
+	method void drawFirstTile(int location) {
+		var int memAddress; 
+		let memAddress = 16384 + location;
+		// column 0
+		do Memory.poke(memAddress, -1);
+		do Memory.poke(memAddress +32, 24335);
+		do Memory.poke(memAddress +64, -7801);
+		do Memory.poke(memAddress +96, 19201);
+		do Memory.poke(memAddress +128, 15839);
+		do Memory.poke(memAddress +160, -32759);
+		do Memory.poke(memAddress +192, 24113);
+		do Memory.poke(memAddress +224, -28511);
+		do Memory.poke(memAddress +256, 9489);
+		do Memory.poke(memAddress +288, 3357);
+		do Memory.poke(memAddress +320, -25489);
+		do Memory.poke(memAddress +352, 6045);
+		do Memory.poke(memAddress +384, -119);
+		do Memory.poke(memAddress +416, 20953);
+		do Memory.poke(memAddress +448, 30581);
+		do Memory.poke(memAddress +480, -1325);
+		// column 1
+		do Memory.poke(memAddress +1, 32767);
+		do Memory.poke(memAddress +33, 7572);
+		do Memory.poke(memAddress +65, 1927);
+		do Memory.poke(memAddress +97, 7577);
+		do Memory.poke(memAddress +129, 32286);
+		do Memory.poke(memAddress +161, 26376);
+		do Memory.poke(memAddress +193, 8);
+		do Memory.poke(memAddress +225, 25113);
+		do Memory.poke(memAddress +257, 11231);
+		do Memory.poke(memAddress +289, 16128);
+		do Memory.poke(memAddress +321, 31025);
+		do Memory.poke(memAddress +353, 16207);
+		do Memory.poke(memAddress +385, 7736);
+		do Memory.poke(memAddress +417, 10680);
+		do Memory.poke(memAddress +449, 21969);
+		do Memory.poke(memAddress +481, 12477);
+		return;
+	}
+
+    method void drawMiddleTile(int location) {
+		var int memAddress; 
+		let memAddress = 16384+location;
+		// column 0
+		do Memory.poke(memAddress, -1);
+		do Memory.poke(memAddress +32, 22284);
+		do Memory.poke(memAddress +64, -6266);
+		do Memory.poke(memAddress +96, 27906);
+		do Memory.poke(memAddress +128, 13790);
+		do Memory.poke(memAddress +160, -28199);
+		do Memory.poke(memAddress +192, -2511);
+		do Memory.poke(memAddress +224, -18399);
+		do Memory.poke(memAddress +256, -17008);
+		do Memory.poke(memAddress +288, 2525);
+		do Memory.poke(memAddress +320, -26514);
+		do Memory.poke(memAddress +352, 4381);
+		do Memory.poke(memAddress +384, -376);
+		do Memory.poke(memAddress +416, 4571);
+		do Memory.poke(memAddress +448, 29797);
+		do Memory.poke(memAddress +480, -1389);
+		// column 1
+		do Memory.poke(memAddress +1, -1);
+		do Memory.poke(memAddress +33, 7636);
+		do Memory.poke(memAddress +65, 951);
+		do Memory.poke(memAddress +97, -31591);
+		do Memory.poke(memAddress +129, -4540);
+		do Memory.poke(memAddress +161, -7672);
+		do Memory.poke(memAddress +193, 285);
+		do Memory.poke(memAddress +225, 24606);
+		do Memory.poke(memAddress +257, -22018);
+		do Memory.poke(memAddress +289, 16144);
+		do Memory.poke(memAddress +321, 31121);
+		do Memory.poke(memAddress +353, -16514);
+		do Memory.poke(memAddress +385, -25064);
+		do Memory.poke(memAddress +417, -22120);
+		do Memory.poke(memAddress +449, -10799);
+		do Memory.poke(memAddress +481, -20291);
+		return;
+    }
+
+	method void drawLastTile(int location) {
+		var int memAddress; 
+		let memAddress = 16384+location;
+		// column 0
+		do Memory.poke(memAddress, -1);
+		do Memory.poke(memAddress +32, 11143);
+		do Memory.poke(memAddress +64, -3901);
+		do Memory.poke(memAddress +96, -23424);
+		do Memory.poke(memAddress +128, 7919);
+		do Memory.poke(memAddress +160, 16388);
+		do Memory.poke(memAddress +192, -24296);
+		do Memory.poke(memAddress +224, -15280);
+		do Memory.poke(memAddress +256, -28024);
+		do Memory.poke(memAddress +288, 1198);
+		do Memory.poke(memAddress +320, -13257);
+		do Memory.poke(memAddress +352, -30578);
+		do Memory.poke(memAddress +384, 32580);
+		do Memory.poke(memAddress +416, 10477);
+		do Memory.poke(memAddress +448, -17870);
+		do Memory.poke(memAddress +480, -695);
+		// column 1
+		do Memory.poke(memAddress +1, 32767);
+		do Memory.poke(memAddress +33, 20202);
+		do Memory.poke(memAddress +65, 16859);
+		do Memory.poke(memAddress +97, 16972);
+		do Memory.poke(memAddress +129, 30498);
+		do Memory.poke(memAddress +161, 28932);
+		do Memory.poke(memAddress +193, 16518);
+		do Memory.poke(memAddress +225, 28936);
+		do Memory.poke(memAddress +257, 21999);
+		do Memory.poke(memAddress +289, 24456);
+		do Memory.poke(memAddress +321, 31944);
+		do Memory.poke(memAddress +353, 24503);
+		do Memory.poke(memAddress +385, 20236);
+		do Memory.poke(memAddress +417, 21708);
+		do Memory.poke(memAddress +449, 27368);
+		do Memory.poke(memAddress +481, 22622);
+		return;
+	}
+	
+	method void drawFloor() {
+		var int shift, i;
+
+		do drawFirstTile(base_location);
+
+		let i = 1;
+		while (i < 15) {
+			let shift = i * 2;
+			do drawMiddleTile(base_location + shift);
+			let i = i + 1;
+		}
+		let shift = i * 2;
+		do drawLastTile(base_location + shift);
+		return;
+	}
+
+	method void dispose() {
+    	do Memory.deAlloc(this);
+    	return;
+	}
+}

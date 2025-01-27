@@ -1,0 +1,25 @@
+class Main {
+    function void main() {
+
+        var SaiyanLegends game;
+        var boolean exit;
+        var Floor endFloor;
+        let game = SaiyanLegends.new();
+
+        let exit = false;
+        while (~exit) {
+            let exit = game.play();
+            do Screen.clearScreen();
+            do game.dispose();
+            let game = SaiyanLegends.new();
+        }
+        // Draw floor
+        let endFloor = Floor.new(7680);
+        do endFloor.drawFloor();
+        do Output.moveCursor(9, 18);
+		do Output.printString("Thanks for playing!");
+        do Output.moveCursor(11, 22);
+        do Output.printString("Itamar and Tomer :)");
+        return;
+    }
+}

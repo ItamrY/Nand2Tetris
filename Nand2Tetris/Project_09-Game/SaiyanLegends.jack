@@ -1,0 +1,240 @@
+class SaiyanLegends {
+    field Goku goku;
+    field Floor floor;
+    field Obstacle currentObstacle;
+    field Ball currentBall;
+
+    field boolean isBallOnScreen;
+    field Array dragonBalls;
+
+
+    field boolean isObstacleOnScreen;
+
+    field int finished;
+
+    constructor SaiyanLegends new() {
+        let finished = 0; // Is the game finished
+        let dragonBalls = Array.new(7);
+        let isBallOnScreen = false;
+        return this;
+    }
+   
+    method int waitForGameStart() {
+        // Show waiting screen until the player decides to start the game
+        var int pressedKey, cycles;
+        let pressedKey = 0;
+        let cycles = 0;
+
+
+        // Draw floor
+        let floor = Floor.new(7680);
+        do floor.drawFloor();
+
+        // Draw starting 
+		do Output.moveCursor(7, 17);
+		do Output.printString("Collect all the Dragonballs!");
+        do Output.moveCursor(9, 20);
+		do Output.printString("Beware the fireballs..");
+        do Output.moveCursor(13, 21);
+        do Output.printString("Press SPACE to start");
+
+        while (~(pressedKey=32)) {
+            let pressedKey = Keyboard.keyPressed();
+            let cycles = cycles + 1;
+        }
+        do Screen.clearScreen();
+        return cycles;
+    }
+
+    method void initializeGame() {
+        // Starting the game
+
+        let goku = Goku.new(16, 192, 10, 10);
+        do goku.draw(); // Draw main character
+
+                
+        // Draw floor
+        let floor = Floor.new(7680);
+        do floor.drawFloor();
+
+        do initializeDragonBalls();
+        let isObstacleOnScreen = false;
+
+
+        return;
+    }
+
+    method void initializeDragonBalls() {
+        // Create an array with seven dragon balls
+        var int i;
+        var Ball ball;
+        let i = 0;
+        while (i < 7) {
+            let ball = Ball.new(i + 1);
+            let dragonBalls[i] = ball;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method int getRandomBallNumber() {
+        return LCGRandom.randRange(0, 6);
+    }
+
+    method void writeBallsCount(int ballCount) {
+        do Output.moveCursor(1, 59);
+        do Output.printInt(ballCount);
+        return;
+    }
+
+    method boolean play() {
+        var int pressedKey, collectedBallsCount;
+
+        // Using the waiting screen to create randomness for the dragon balls 
+        do LCGRandom.setSeed(waitForGameStart());
+
+        // Starting the game
+        do initializeGame();
+
+        do Output.moveCursor(1, 35);
+        do Output.printString("Dragon balls collected: ");
+
+        
+        let collectedBallsCount = 0;
+        do writeBallsCount(collectedBallsCount);
+
+        let pressedKey = 0;
+        while (~(pressedKey = 81)) { // while 'q' isn't pressed
+            // Get player input
+            let pressedKey = Keyboard.keyPressed();
+            
+
+            // Create ball instace to appear on screen
+            if (~isBallOnScreen) {
+                let currentBall = Ball.new(getRandomBallNumber());
+                let isBallOnScreen = true;
+            }
+
+            // Create obstacle instance to appear on screen
+            if (~isObstacleOnScreen) {
+                let currentObstacle = Obstacle.new();
+                let isObstacleOnScreen = true;
+            }
+            // update main charchter
+            do goku.update(pressedKey);
+
+            // update the current ball location
+            do currentBall.moveLeft();
+            if (currentBall.isAtEnd()) {
+                do currentBall.dispose();
+                let isBallOnScreen = false;
+            }
+
+            do currentObstacle.moveLeft();
+            if (currentObstacle.isAtEnd()) {
+                do currentObstacle.dispose();
+                let isObstacleOnScreen = false;
+            }
+
+            // Check for collision with the dragon ball
+            if (detectBallCollision(currentBall)) {
+                let collectedBallsCount = collectedBallsCount + 1;
+                do writeBallsCount(collectedBallsCount);
+                do currentBall.dispose();
+                let isBallOnScreen = false;
+            }
+
+            if (detectObstacleCollision(currentObstacle)) {
+                return exitGame();
+            }
+            
+            do Sys.wait(30);
+        }    
+        return true;
+    }
+
+    method boolean exitGame() {
+        var int pressedKey;
+        let pressedKey = 0;
+        do Output.moveCursor(10, 26);
+        do Output.printString("You died!");
+        do Output.moveCursor(12, 12);
+        do Output.printString("Press ENTER to restart, press q to exit");
+        do goku.die();
+        do currentBall.clear();
+        do currentObstacle.clear();
+        while (true) {
+            let pressedKey = Keyboard.keyPressed();
+            if (pressedKey = 113) {
+                return true;
+            }
+            if (pressedKey = 128) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    method boolean detectBallCollision(Ball ball) {
+        var int gokuTop, gokuBottom, gokuLeft, gokuRight; // Goku coordinates
+        var int ballTop, ballBottom, ballLeft, ballRight; // Ball coordinates
+        let gokuTop = goku.getY();
+        let gokuBottom = goku.getY() + goku.getHeight();
+        let gokuLeft = goku.getX();
+        let gokuRight = goku.getX() + goku.getWidth();
+        
+        let ballTop = ball.getY();
+        let ballBottom = ballTop + ball.getSize();
+        let ballLeft = ball.getX();
+        let ballRight = ball.getX() + ball.getSize();
+
+        if (gokuTop > ballBottom) { // ball above goku
+            return false;
+        }
+        if (gokuBottom < ballTop) { // ball below goku
+            return false;
+        }
+        if (gokuRight < ballLeft) { // ball right of goku
+            return false;
+        }
+        if (gokuLeft > ballRight) { // ball left of goku (behind)
+            return false;
+        }
+        return true;
+    }
+
+    method boolean detectObstacleCollision (Obstacle currentObstacle) {
+        // Function to detect a collision between goku to the obstacle
+        var int gokuTop, gokuBottom, gokuLeft, gokuRight;
+        var int obstacleTop, obstacleBottom, obstacleLeft, obstacleRight; // Obstacle Coordinates
+        let gokuTop = goku.getY();
+        let gokuBottom = goku.getY() + goku.getHeight();
+        let gokuLeft = goku.getX();
+        let gokuRight = goku.getX() + goku.getWidth();
+
+        
+        let obstacleTop = currentObstacle.getY();
+        let obstacleBottom = currentObstacle.getY() + currentObstacle.getSize();
+        let obstacleLeft = currentObstacle.getX();
+        let obstacleRight = currentObstacle.getX() + currentObstacle.getSize();
+    
+        if (gokuTop > obstacleBottom) {
+            return false;
+        }
+        if (gokuBottom < obstacleTop) {
+            return false;
+        }
+        if (gokuRight < obstacleLeft) {
+            return false;
+        }
+        if (gokuLeft > obstacleRight) {
+            return false;
+        }
+        return true;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+    	return;
+    }
+}
